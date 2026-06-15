@@ -15,7 +15,7 @@
 
 <script setup>
 definePageMeta({
-  layout: 'MainWithoutBackButtonLayout',
+  layout: 'main-without-back-button-layout',
   middleware: []
 })
 
@@ -61,7 +61,6 @@ onMounted(() => {
   checkNetwork()
   window.addEventListener('online', handleOnline)
   window.addEventListener('offline', handleOffline)
-  toast.show('Installation started!')
 })
 
 onUnmounted(() => {

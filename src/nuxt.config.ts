@@ -10,6 +10,7 @@ export default defineNuxtConfig({
       baseUrl: process.env.API_BASE_URL || 'http://localhost:3000/',
       appEnv: process.env.APP_ENV || 'local',
       appVersion: process.env.APP_VERSION || '1.0.0',
+      appHeaderTitle: process.env.APP_HEADER_TITLE || 'Unifam',
       sentryDsn: process.env.SENTRY_DSN || '',
       sentryEnv: process.env.SENTRY_ENV || 'local',
       sentryDisabled: process.env.SENTRY_DISABLED || '0',

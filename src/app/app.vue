@@ -1,7 +1,9 @@
 <template>
   <div>
     <NuxtRouteAnnouncer />
-    <NuxtPage />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
 
     <!-- Toast notification -->
     <Transition name="toast">
