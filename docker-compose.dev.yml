@@ -1,0 +1,17 @@
+services:
+  app:
+    container_name: unidev_fe_nuxt4_dev
+    image: unidev_fe_nuxt4_dev
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "10002:3000"
+    volumes: 
+      - ./src:/src
+      - node-modules:/src/node_modules
+    environment:
+      - HOST=0.0.0.0
+
+volumes:
+  node-modules:
