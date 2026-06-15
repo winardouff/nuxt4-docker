@@ -10,8 +10,22 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@capacitor/core": "^8.4.0",
+    "@ionic/core": "^8.8.10",
+    "@ionic/vue": "^8.8.10",
+    "@pinia/nuxt": "^0.11.3",
+    "@sentry/vue": "^10.57.0",
+    "dayjs": "^1.11.21",
+    "geolib": "^3.3.14",
+    "jwt-decode": "^4.0.0",
+    "leaflet": "^1.9.4",
     "nuxt": "^4.4.8",
+    "pinia": "^3.0.4",
+    "pouchdb": "^9.0.0",
     "vue": "^3.5.35",
     "vue-router": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.3"
   }
 }
