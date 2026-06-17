@@ -94,8 +94,10 @@ async function changeLang(langCode: string) {
 
 <style scoped>
 .lang {
-  position: absolute;
-  z-index: 999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100000;
   background: white;
   height: 100%;
   width: 100%;

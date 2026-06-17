@@ -1,25 +1,29 @@
 <template>
-  <ion-app>
-    <SideMenu @lang-clicked="showLang" />
-    <div id="main-content" class="ion-page">
-      <ion-header>
-        <HeaderMenu
-          :page-title="titleName"
-          :is-show-timer="isShowTimer"
-        />
-      </ion-header>
-      <ion-content>
-        <slot />
-      </ion-content>
-      <DashboardChatWidget :enable-voice="true" />
-      <ion-footer style="display: none">
-        <ion-toolbar>
-          <BottomMenu :is-visible="false" />
-        </ion-toolbar>
-      </ion-footer>
-    </div>
-    <Language :is-show-lang="isShowLang" @close-clicked="showLang" />
-  </ion-app>
+  <div>
+    <ion-app>
+      <SideMenu @lang-clicked="showLang" />
+      <div id="main-content" class="ion-page">
+        <ion-header>
+          <HeaderMenu
+            :page-title="titleName"
+            :is-show-timer="isShowTimer"
+          />
+        </ion-header>
+        <ion-content>
+          <slot />
+        </ion-content>
+        <DashboardChatWidget :enable-voice="true" />
+        <ion-footer style="display: none">
+          <ion-toolbar>
+            <BottomMenu :is-visible="false" />
+          </ion-toolbar>
+        </ion-footer>
+      </div>
+    </ion-app>
+    <Teleport to="body">
+      <Language :is-show-lang="isShowLang" @close-clicked="showLang" />
+    </Teleport>
+  </div>
 </template>
 
 <script setup>
