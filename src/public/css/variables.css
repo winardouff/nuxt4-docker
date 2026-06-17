@@ -1,0 +1,22 @@
+/** Ionic CSS Variables **/
+:root {
+	--ion-color-apps: #4996aa;
+	--ion-color-apps-rgb: 73, 150, 170;
+	--ion-color-apps-contrast: #ffffff;
+	--ion-color-apps-contrast-rgb: 0, 0, 0;
+	--ion-color-apps-shade: #408496;
+	--ion-color-apps-tint: #5ba1b3;
+	--ion-color-apps-secondary: #FF7D69;
+	--ion-color-apps-secondary-rgb: 255, 125, 105;
+	--ion-color-apps-secondary-contrast: #ffffff;
+	--ion-color-apps-secondary-contrast-rgb: 0, 0, 0;
+	--ion-color-apps-secondary-shade: #e06e5c;
+	--ion-color-apps-secondary-tint: #ff8a78;
+	--ion-color-apps-tertiary: #FFD269;
+	--ion-color-apps-tertiary-rgb: 255, 210, 105;
+	--ion-color-apps-tertiary-contrast: #ffffff;
+	--ion-color-apps-tertiary-contrast-rgb: 0, 0, 0;
+	--ion-color-apps-tertiary-shade: #e0b95c;
+	--ion-color-apps-tertiary-tint: #ffd778;
+	--ion-color-secondary: #4996aa;
+}

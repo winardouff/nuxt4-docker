@@ -3,7 +3,38 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   ssr: false,
   devtools: { enabled: true },
-  modules: ['@pinia/nuxt'],
+
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => tag.startsWith('ion-'),
+    },
+  },
+
+  css: [
+    '@ionic/core/css/core.css',
+    '@ionic/core/css/normalize.css',
+    '@ionic/core/css/structure.css',
+    '@ionic/core/css/typography.css',
+    '@ionic/core/css/ionic.bundle.css',
+    '~/assets/css/layout.css',
+    '~/assets/scss/style.scss',
+    '~/assets/css/variables.css',
+  ],
+
+  modules: [
+    '@pinia/nuxt',
+    ['@nuxtjs/i18n', {
+      locales: [
+        { code: 'en', file: 'en-US.ts' },
+        { code: 'id', file: 'id-ID.ts' },
+        { code: 'vi', file: 'vi-VN.ts' },
+      ],
+      defaultLocale: 'en',
+      lazy: true,
+      langDir: 'lang/',
+      strategy: 'no_prefix',
+    }],
+  ],
 
   runtimeConfig: {
     public: {
@@ -27,6 +58,7 @@ export default defineNuxtConfig({
       apiManufactureLocalUrl: process.env.API_MANUFACTURE_LOCAL_URL || '',
       apiFinanceLocalUrl: process.env.API_FINANCE_LOCAL_URL || '',
       apiWorkflowLocalUrl: process.env.API_WORKFLOW_LOCAL_URL || '',
+      couchDBUrl: process.env.COUCHDB_URL || '',
     }
   }
 })

@@ -50,6 +50,33 @@
               :disabled="isSending"
               :placeholder="inputPlaceholder"
             />
+            <button
+              v-if="enableVoice"
+              class="chat-voice-button"
+              type="button"
+              :disabled="isTranscribing"
+              :class="{
+                listening: isListening,
+                transcribing: isTranscribing,
+                unsupported: !speechSupported
+              }"
+              :title="
+                isTranscribing
+                  ? 'Transcribing...'
+                  : speechSupported
+                  ? isListening
+                    ? 'Stop recording'
+                    : 'Start voice input'
+                  : 'Voice input is not supported in this browser'
+              "
+              @click="toggleVoiceInput"
+            >
+              <svg viewBox="0 0 24 24" role="img" focusable="false">
+                <path
+                  d="M12 15.25a3.25 3.25 0 0 0 3.25-3.25V7a3.25 3.25 0 1 0-6.5 0v5A3.25 3.25 0 0 0 12 15.25Zm5.25-3.5a.75.75 0 0 1 1.5 0 6.75 6.75 0 0 1-6 6.7V21h2.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1 0-1.5h2.5v-2.55a6.75 6.75 0 0 1-6-6.7.75.75 0 0 1 1.5 0 5.25 5.25 0 1 0 10.5 0Z"
+                />
+              </svg>
+            </button>
           </div>
           <button
             class="chat-send-button"
@@ -68,26 +95,38 @@
     </Transition>
 
     <div
+      ref="chatTriggerRef"
       class="chat-trigger-area"
-      :class="{ 'is-open': isChatOpen }"
+      :class="{
+        'is-dragging': fabDrag.active,
+        'is-open': isChatOpen
+      }"
+      :style="chatTriggerStyle"
     >
       <button
         class="chat-fab"
         type="button"
         :aria-label="isChatOpen ? 'Hide chat' : 'Open chat'"
-        @click="toggleChatMenu"
+        @click="handleFabClick"
+        @mousedown="startFabDrag"
+        @touchstart="startFabDrag"
+        @touchend.capture.stop.prevent="handleFabTouchEnd"
       >
+        <span class="chat-fab-glow" aria-hidden="true"></span>
         <span class="chat-fab-ring" aria-hidden="true">
           <span class="chat-fab-avatar-shell">
             <img class="chat-fab-avatar" src="/ic_milki.png" alt="" />
           </span>
         </span>
+        <span class="chat-fab-sr">{{ isChatOpen ? 'Hide chat' : 'Open chat' }}</span>
       </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { WhisperRecorder } from '~/utils/whisper-recorder'
+
 const props = defineProps({
   enableVoice: {
     type: Boolean,
@@ -96,21 +135,41 @@ const props = defineProps({
 })
 
 const { httpPost } = useHttp()
+const toast = useToast()
 
 const CHAT_OPEN_KEY = 'dashboard_chat_widget:is_open'
 const CHAT_CONVERSATION_KEY = 'dashboard_chat_widget:conversation_id'
 
 // State
 const messageListRef = ref<HTMLElement | null>(null)
+const chatTriggerRef = ref<HTMLElement | null>(null)
 const isChatOpen = ref(false)
 const isSending = ref(false)
 const draftMessage = ref('')
 const conversationId = ref('')
+const isListening = ref(false)
+const isTranscribing = ref(false)
+const speechSupported = ref(false)
+let whisperRecorder: WhisperRecorder | null = null
 const messages = ref([
   { id: 1, sender: 'bot', text: 'Hello, how can we help you today?' },
   { id: 2, sender: 'bot', text: 'Choose a topic or type your question.' },
 ])
 let idCounter = 3
+
+// FAB drag state
+const CHAT_TRIGGER_POSITION_KEY = 'dashboard_chat_widget:trigger_position'
+const fabPosition = reactive({ x: null as number | null, y: null as number | null })
+const fabDrag = reactive({
+  active: false,
+  hasMoved: false,
+  pointerType: '',
+  startPointerX: 0,
+  startPointerY: 0,
+  startX: 0,
+  startY: 0,
+})
+let ignoreNextFabClick = false
 
 // Computed
 const canShowChatWidget = computed(() => {
@@ -125,9 +184,169 @@ const canShowChatWidget = computed(() => {
 })
 
 const inputPlaceholder = computed(() => {
+  if (isTranscribing.value) return 'Transcribing your voice...'
+  if (isListening.value) return 'Recording... tap mic to stop'
   if (isSending.value) return 'Waiting for response...'
   return 'Ask about your data...'
 })
+
+const chatTriggerStyle = computed(() => {
+  if (fabPosition.x == null || fabPosition.y == null) return {}
+  return {
+    left: `${fabPosition.x}px`,
+    top: `${fabPosition.y}px`,
+  }
+})
+
+// FAB drag methods
+function clampFabPosition(position: { x: number; y: number }) {
+  const vw = window.innerWidth
+  const vh = window.innerHeight
+  const trigger = chatTriggerRef.value
+  const tw = trigger ? trigger.offsetWidth : 104
+  const th = trigger ? trigger.offsetHeight : 104
+  const margin = vw <= 576 ? 14 : 20
+  return {
+    x: Math.min(Math.max(position.x, margin), Math.max(margin, vw - tw - margin)),
+    y: Math.min(Math.max(position.y, margin), Math.max(margin, vh - th - margin)),
+  }
+}
+
+function getDefaultFabPosition() {
+  const vw = window.innerWidth
+  const vh = window.innerHeight
+  const trigger = chatTriggerRef.value
+  const tw = trigger ? trigger.offsetWidth : 104
+  const th = trigger ? trigger.offsetHeight : 104
+  const margin = vw <= 576 ? 14 : 20
+  return clampFabPosition({ x: vw - tw - margin, y: (vh - th) / 2 })
+}
+
+function getFabPointerPosition(event: any) {
+  if (event.touches?.length > 0) return { x: event.touches[0].clientX, y: event.touches[0].clientY }
+  if (event.changedTouches?.length > 0) return { x: event.changedTouches[0].clientX, y: event.changedTouches[0].clientY }
+  return { x: event.clientX, y: event.clientY }
+}
+
+function handleFabClick() {
+  if (!canShowChatWidget.value) return
+  if (ignoreNextFabClick) { ignoreNextFabClick = false; return }
+  toggleChatMenu()
+}
+
+function handleFabTouchEnd() {
+  if (!fabDrag.active) return
+  const wasMoved = fabDrag.hasMoved
+  handleFabDragEnd()
+  if (wasMoved) return
+  ignoreNextFabClick = true
+}
+
+function handleFabDragEnd() {
+  if (!fabDrag.active) return
+  const vw = window.innerWidth
+  const margin = vw <= 576 ? 14 : 20
+  const trigger = chatTriggerRef.value
+  const tw = trigger ? trigger.offsetWidth : 104
+  const current = clampFabPosition({ x: fabPosition.x!, y: fabPosition.y! })
+  const rightEdge = Math.max(margin, vw - tw - margin)
+
+  fabPosition.x = (current.x + tw / 2 < vw / 2) ? margin : rightEdge
+  fabPosition.y = current.y
+
+  const shouldToggle = fabDrag.pointerType === 'touch' && !fabDrag.hasMoved
+  persistFabPosition()
+  ignoreNextFabClick = fabDrag.hasMoved
+
+  fabDrag.active = false
+  fabDrag.hasMoved = false
+  fabDrag.pointerType = ''
+  removeFabDragListeners()
+
+  if (shouldToggle) {
+    ignoreNextFabClick = true
+    toggleChatMenu()
+  }
+}
+
+function handleFabDragMove(event: any) {
+  if (!fabDrag.active) return
+  const pointer = getFabPointerPosition(event)
+  const next = clampFabPosition({
+    x: fabDrag.startX + (pointer.x - fabDrag.startPointerX),
+    y: fabDrag.startY + (pointer.y - fabDrag.startPointerY),
+  })
+  if (!fabDrag.hasMoved && (Math.abs(pointer.x - fabDrag.startPointerX) > 5 || Math.abs(pointer.y - fabDrag.startPointerY) > 5)) {
+    fabDrag.hasMoved = true
+  }
+  if (event.cancelable) event.preventDefault()
+  fabPosition.x = next.x
+  fabPosition.y = next.y
+}
+
+function startFabDrag(event: any) {
+  if (event.type === 'mousedown' && event.button !== 0) return
+  const pointer = getFabPointerPosition(event)
+  const defaultPos = getDefaultFabPosition()
+  fabDrag.active = true
+  fabDrag.hasMoved = false
+  fabDrag.pointerType = event.type === 'touchstart' ? 'touch' : 'mouse'
+  fabDrag.startPointerX = pointer.x
+  fabDrag.startPointerY = pointer.y
+  fabDrag.startX = fabPosition.x ?? defaultPos.x
+  fabDrag.startY = fabPosition.y ?? defaultPos.y
+
+  if (event.type === 'mousedown' && event.cancelable) event.preventDefault()
+  removeFabDragListeners()
+  window.addEventListener('mousemove', handleFabDragMove)
+  window.addEventListener('mouseup', handleFabDragEnd)
+  window.addEventListener('touchmove', handleFabDragMove, { passive: false })
+  window.addEventListener('touchend', handleFabDragEnd, { passive: true })
+  window.addEventListener('touchcancel', handleFabDragEnd, { passive: true })
+}
+
+function removeFabDragListeners() {
+  window.removeEventListener('mousemove', handleFabDragMove)
+  window.removeEventListener('mouseup', handleFabDragEnd)
+  window.removeEventListener('touchmove', handleFabDragMove)
+  window.removeEventListener('touchend', handleFabDragEnd)
+  window.removeEventListener('touchcancel', handleFabDragEnd)
+}
+
+function persistFabPosition() {
+  if (fabPosition.x == null || fabPosition.y == null) return
+  sessionStorage.setItem(CHAT_TRIGGER_POSITION_KEY, JSON.stringify({ x: fabPosition.x, y: fabPosition.y }))
+}
+
+function restoreFabPosition() {
+  const stored = sessionStorage.getItem(CHAT_TRIGGER_POSITION_KEY)
+  if (!stored) return null
+  try {
+    const parsed = JSON.parse(stored)
+    if (typeof parsed?.x === 'number' && typeof parsed?.y === 'number') return parsed
+  } catch {}
+  return null
+}
+
+function initializeFabPosition() {
+  nextTick(() => {
+    const restored = restoreFabPosition() || getDefaultFabPosition()
+    const clamped = clampFabPosition(restored)
+    fabPosition.x = clamped.x
+    fabPosition.y = clamped.y
+    persistFabPosition()
+  })
+}
+
+function handleViewportResize() {
+  nextTick(() => {
+    const restored = restoreFabPosition() || getDefaultFabPosition()
+    const clamped = clampFabPosition(restored)
+    fabPosition.x = clamped.x
+    fabPosition.y = clamped.y
+    persistFabPosition()
+  })
+}
 
 // Methods
 function toggleChatMenu() {
@@ -228,14 +447,162 @@ function restoreConversationId() {
   conversationId.value = sessionStorage.getItem(CHAT_CONVERSATION_KEY) || ''
 }
 
+// Voice input methods
+function initWhisperRecorder() {
+  if (!props.enableVoice) {
+    speechSupported.value = false
+    return
+  }
+  if (!WhisperRecorder.isSupported()) {
+    speechSupported.value = false
+    return
+  }
+  whisperRecorder = new WhisperRecorder()
+  speechSupported.value = true
+}
+
+function stopVoiceInput() {
+  if (whisperRecorder && whisperRecorder.isRecording()) {
+    whisperRecorder.stop()
+  }
+  isListening.value = false
+}
+
+async function toggleVoiceInput() {
+  if (!props.enableVoice) return
+
+  if (!whisperRecorder) {
+    initWhisperRecorder()
+  }
+
+  if (!speechSupported.value || !whisperRecorder) {
+    toast.show('Voice input is not supported in this browser.')
+    return
+  }
+
+  if (isTranscribing.value) return
+
+  // Currently recording — stop and transcribe
+  if (isListening.value) {
+    isListening.value = false
+    const audioBlob = await whisperRecorder.stop()
+    await transcribeAudioBlob(audioBlob)
+    return
+  }
+
+  // Check network
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    toast.show('Internet connection is required for voice input.')
+    return
+  }
+
+  // Start recording
+  try {
+    await whisperRecorder.start({
+      onAutoStop: (audioBlob: Blob) => {
+        isListening.value = false
+        transcribeAudioBlob(audioBlob)
+      },
+    })
+    isListening.value = true
+  } catch {
+    toast.show('Microphone access denied.')
+  }
+}
+
+async function transcribeAudioBlob(audioBlob: Blob | null) {
+  if (!audioBlob) return
+
+  isTranscribing.value = true
+
+  try {
+    const formData = new FormData()
+    formData.append('file', audioBlob, 'voice.webm')
+    formData.append('language', 'id')
+
+    const response = await httpPost('speech/transcribe-audio', formData, 'ai', {}, 30000)
+    const responseBody = response?.data
+
+    if (responseBody && responseBody.code && responseBody.code !== 200) {
+      throw new Error(responseBody.message || 'Failed to transcribe audio.')
+    }
+
+    const transcript = responseBody?.data?.text || ''
+    if (transcript) {
+      handleVoiceCommand(transcript.trim())
+    }
+  } catch {
+    toast.show('Voice transcription failed.')
+  } finally {
+    isTranscribing.value = false
+  }
+}
+
+function handleVoiceCommand(transcript: string) {
+  const normalized = transcript.toLowerCase()
+
+  if (
+    normalized.includes('send message') ||
+    normalized.includes('send chat') ||
+    normalized.includes('kirim pesan') ||
+    normalized.includes('kirim chat')
+  ) {
+    draftMessage.value = transcript
+      .replace(/send message/gi, '')
+      .replace(/send chat/gi, '')
+      .replace(/kirim pesan/gi, '')
+      .replace(/kirim chat/gi, '')
+      .trim()
+    if (draftMessage.value) {
+      sendMessage()
+    }
+    return
+  }
+
+  if (
+    normalized === 'clear' ||
+    normalized === 'clear message' ||
+    normalized === 'hapus' ||
+    normalized === 'hapus pesan'
+  ) {
+    draftMessage.value = ''
+    return
+  }
+
+  if (
+    normalized === 'close chat' ||
+    normalized === 'tutup chat' ||
+    normalized === 'close'
+  ) {
+    closeChatMenu()
+    return
+  }
+
+  draftMessage.value = transcript
+}
+
 // Lifecycle
 onMounted(() => {
   if (!canShowChatWidget.value) return
+  if (props.enableVoice) {
+    initWhisperRecorder()
+  }
   restoreChatOpenState()
   restoreConversationId()
+  initializeFabPosition()
+  window.addEventListener('resize', handleViewportResize)
   if (isChatOpen.value) {
     scrollToBottom()
   }
+})
+
+onBeforeUnmount(() => {
+  stopVoiceInput()
+  if (whisperRecorder) {
+    whisperRecorder.cleanup()
+  }
+  removeFabDragListeners()
+  window.removeEventListener('resize', handleViewportResize)
 })
 </script>
 
@@ -766,6 +1133,7 @@ onMounted(() => {
   transition: all 0.2s ease;
 }
 
+.chat-pop-enter,
 .chat-pop-enter-from,
 .chat-pop-leave-to {
   opacity: 0;

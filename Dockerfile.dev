@@ -1,5 +1,7 @@
 FROM node:24.16-alpine
 
+RUN apk add --no-cache git
+
 ENV APP_ROOT /src
 
 RUN mkdir ${APP_ROOT}

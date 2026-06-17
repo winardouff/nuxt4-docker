@@ -1,0 +1,45 @@
+html,
+body,
+ion-item,
+ion-title,
+ion-col,
+h3,
+h6,
+ion-searchbar,
+p,
+ion-item-divider {
+    font-family: sans-serif;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+code,
+kbd,
+pre,
+samp {
+    font-size: 0.8em !important;
+}
+
+#main-content{
+    font-size: small !important;
+}
+
+.font-small{
+    font-size: small !important;
+}
+
+.form-control{
+    font-size: small;
+}
+
+.custom-select{
+    font-size: small;
+}
+
+a.dropdown-item{
+    font-size: small;
+}
+
+.mx-input {
+    font-size: small !important;
+}

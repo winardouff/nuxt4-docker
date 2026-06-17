@@ -1,0 +1,382 @@
+.badge-rank {
+  position: absolute;
+  height: 20%;
+  top: 0%;
+  left: 68%;
+  width: 32%;
+  padding: 2px 0;
+  // border: 2px solid cyan;
+  border-radius: 90px;
+  text-align: center;
+  font-size: 85%;
+}
+
+#top-rank {
+  color: grey;
+}
+
+#badge-top-rank {
+  top: -5%;
+  color: grey;
+  height: 25%;
+  width: 40%;
+  left: 63%;
+}
+
+.img-avatar {
+  border-radius: 50%;
+}
+
+body {
+  background: #f5f5f5;
+}
+
+.chip-inactive {
+  display: inline-block;
+  padding: 0 25px;
+  height: 30px;
+  font-size: 16px;
+  line-height: 30px;
+  border-radius: 25px;
+  background-color: #f1f1f1;
+  border-color: blue;
+}
+
+.chip-active {
+  display: inline-block;
+  padding: 0 25px;
+  height: 30px;
+  font-size: 16px;
+  line-height: 30px;
+  border-radius: 25px;
+  color: white;
+  background-color: var(--ion-color-apps);
+}
+
+.chip img {
+  float: left;
+  margin: 0 10px 0 -25px;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+}
+
+div.scroll {
+  margin: 4px, 4px;
+  padding: 4px;
+  width: auto;
+  overflow-x: auto !important;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+.active:active {
+  color: red;
+}
+
+.focus:focus {
+  color: red;
+}
+
+:target {
+  color: red;
+}
+
+.ion-color-apps {
+  --ion-color-base: var(--ion-color-apps);
+  --ion-color-base-rgb: var(--ion-color-apps-rgb);
+  --ion-color-contrast: var(--ion-color-apps-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-apps-contrast-rgb);
+  --ion-color-shade: var(--ion-color-apps-shade);
+  --ion-color-tint: var(--ion-color-apps-tint);
+}
+
+.ion-color-apps-secondary {
+  --ion-color-base: var(--ion-color-apps-secondary);
+  --ion-color-base-rgb: var(--ion-color-apps-secondary-rgb);
+  --ion-color-contrast: var(--ion-color-apps-secondary-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-apps-secondary-contrast-rgb);
+  --ion-color-shade: var(--ion-color-apps-secondary-shade);
+  --ion-color-tint: var(--ion-color-apps-secondary-tint);
+}
+
+.ion-color-apps-tertiary {
+  --ion-color-base: var(--ion-color-apps-tertiary);
+  --ion-color-base-rgb: var(--ion-color-apps-tertiary-rgb);
+  --ion-color-contrast: var(--ion-color-apps-tertiary-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-apps-tertiary-contrast-rgb);
+  --ion-color-shade: var(--ion-color-apps-tertiary-shade);
+  --ion-color-tint: var(--ion-color-apps-tertiary-tint);
+}
+
+.no-scroll {
+  --offset-bottom: auto !important;
+  --overflow: hidden;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.padding-15 {
+  padding: 15px;
+}
+
+.button-primary-outline {
+  --border-color: var(--ion-color-apps);
+  --color: var(--ion-color-apps);
+  --background: none;
+  --background-activated: none;
+  border-width: thin;
+  border-style: solid;
+  border-radius: 4px;
+}
+
+.button-primary-outline:hover {
+  border: 1px solid var(--ion-color-apps);
+  background-color: none;
+  color: var(--ion-color-apps);
+}
+
+.button-danger-outline {
+  --border-color: red;
+  --color: red;
+  --background: none;
+  --background-activated: none;
+  border-width: thin;
+  border-style: solid;
+  border-radius: 4px;
+}
+
+.button-primary {
+  float: right;
+  margin: auto;
+  --background: #0096a9;
+  font-size: small;
+}
+
+.button-mutiple-release {
+  float: right;
+  margin: auto;
+  --background: #8a8a8a;
+  font-size: small;
+}
+
+.employee-button-add-new {
+  float: right;
+  margin: auto;
+  --background: #0096a9;
+  font-size: small;
+}
+
+.product-button-add-new {
+  float: right;
+  margin: auto;
+  --background: #0096a9;
+  font-size: small;
+}
+
+.button-add-new {
+  float: right;
+  margin: auto;
+  --background: #0096a9;
+  font-size: small;
+}
+
+.white-initial {
+  white-space: initial;
+}
+
+.spesial-cursor {
+  cursor: pointer;
+}
+
+.font-inherit {
+  font-family: inherit !important;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.bold-text {
+  font-weight: bold;
+}
+
+.ms-100px {
+  max-width: 100px !important;
+  max-height: 100px !important;
+}
+
+.text-wrap-custom {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.thin-col {
+  flex: 0 0 100px;
+}
+
+.vertical-center {
+  margin: auto;
+  width: 50%;
+}
+
+.background-color-transparent {
+  background-color: transparent;
+  font-size: 18px;
+}
+
+.background-color-apps {
+  background-color: var(--ion-color-apps) !important;
+}
+
+.small-text {
+  font-size: small;
+}
+
+.nopadding {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.table-nopadding td {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.table-nopadding tr {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.table-nopadding td.text-td-left {
+  text-align: left;
+  padding-left: 10px !important;
+}
+
+.table-nopadding td.text-td-right {
+  text-align: right;
+  padding-right: 10px !important;
+}
+
+.padding0 {
+  --padding-end: 0px;
+  --inner-padding-end: 0px;
+}
+
+.font-14 {
+  font-size: 14px;
+}
+
+.font-15 {
+  font-size: 15px;
+}
+
+.font-16 {
+  font-size: 16px;
+}
+
+.font-11-pt {
+  font-size: 11pt;
+}
+
+.width-btn-100 {
+  width: 100px;
+}
+
+ion-popover [popover]:not(:popover-open):not(dialog[open]) {
+  display: contents;
+}
+
+.swiper-pagination {
+  bottom: -4px !important;
+}
+
+.swiper-container {
+  padding-left: 15px;
+  padding-bottom: 20px;
+}
+
+.label-cell-column-table {
+  // white-space: nowrap;
+
+  /* Hide overflowing text */
+  overflow: hidden;
+
+  /* Display ellipsis (...) for overflowed text */
+  text-overflow: ellipsis;
+
+  /* Ensure the text doesn't expand beyond the cell's width */
+  max-width: 100%;
+
+  /* Adjust the font size as needed */
+  font-size: 14px;
+}
+
+.left-and-right-ends {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.no-ripple {
+  --ripple-color: transparent;
+  --background-activated: transparent;
+}
+
+label, input, select, textarea {
+  line-height: inherit;
+}
+
+.custom-control.custom-control-inline.custom-radio label span{
+  vertical-align: middle !important;
+}
+
+.modal-footer {
+  display: unset;
+  text-align: right;
+}
+
+.modal-footer-okleft {
+  direction: rtl;
+}
+
+.text-nowrap-ellipsis {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
+
+.text-clickable {
+  cursor: pointer;
+}
+
+#b-toaster-top-right .toast {
+  width: 650px !important;
+  max-width: 650px !important;
+}
+
+#b-toaster-top-right .b-toaster-slot {
+  max-width: 650px !important;
+}
+
+.multiselect {
+  min-height: 15px !important;
+}
+
+.multiselect__tags {
+  min-height: 15px !important;
+  font-size: 15px !important;
+}
+
+.multiselect__input, .multiselect__single {
+  min-height: 15px !important;
+  line-height: 15px !important;
+}
+
+.multiselect__placeholder {
+    padding-top: unset !important;
+}

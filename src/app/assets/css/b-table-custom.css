@@ -1,0 +1,43 @@
+.custom-pagination {
+    --hover-background-color: #ffffff;
+}
+
+.custom-pagination .b-pagination .page-item .page-link:hover {
+    background-color: var(--hover-background-color);
+}
+
+.custom-pagination .b-pagination .page-item.active .page-link {
+    background-color: var(--ion-color-apps);
+    border-color: var(--ion-color-apps);
+    color: #ffffff;
+}
+
+.custom-pagination .b-pagination .page-item .page-link {
+    color: var(--ion-color-apps);
+}
+
+/* sticky header */
+.custom-header-class th {
+    background-color: var(--ion-color-apps);
+    color: white;
+}
+
+/* sticky first row */
+.sticky-row .b-table tbody tr:first-child {
+    position: sticky;
+    top: 40px;
+    background-color: var(--ion-color-apps);
+    z-index: 3;
+}
+
+.sticky-row .b-table tbody tr:first-child .table th,
+.table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 0px;
+}
+
+.sticky-row .b-table tbody tr:first-child td {
+    padding-top: 0;
+    /* Ensures no top padding in the sticky row */
+}

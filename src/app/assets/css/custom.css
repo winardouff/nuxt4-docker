@@ -1,0 +1,24 @@
+.hide-scrollbar-desktop::part(scroll)::-webkit-scrollbar {
+    display: none;
+}
+
+.hide-scrollbar-desktop::part(scroll) {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.scroll-box {
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* Chrome, Edge, Safari */
+.scroll-box.hide-scrollbar-desktop::-webkit-scrollbar {
+    display: none;
+}
+
+/* Firefox */
+.scroll-box.hide-scrollbar-desktop {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}

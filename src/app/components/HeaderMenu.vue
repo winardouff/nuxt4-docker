@@ -10,7 +10,6 @@
 
 <script setup lang="ts">
 import { menu as menuIcon } from 'ionicons/icons'
-import { menuController } from '@ionic/core'
 
 const props = defineProps({
   pageTitle: {
@@ -35,9 +34,11 @@ watch(() => props.isShowTimer, (newVal) => {
   }
 })
 
-function openMenu() {
-  menuController.enable(true)
-  menuController.open('side-menu')
+async function openMenu() {
+  const menu = document.querySelector('ion-menu[menu-id="side-menu"]') as any
+  if (menu) {
+    await menu.open()
+  }
 }
 
 function getTimeLog() {
