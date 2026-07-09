@@ -26,11 +26,11 @@
         <ion-item class="box" lines="none">
           <ion-input
             ref="searchInputRef"
+            v-model="searchMenu"
             class="color-text"
             type="text"
             mode="ios"
             placeholder="Search Menu"
-            @ion-input="searchMenu = $event.target.value"
           ></ion-input>
           <ion-icon
             v-if="searchMenu.length === 0"

@@ -40,8 +40,8 @@ export default defineNuxtConfig({
     public: {
       baseUrl: process.env.API_BASE_URL || 'http://localhost:3000/',
       appEnv: process.env.APP_ENV || 'local',
-      appVersion: process.env.APP_VERSION || '1.0.0',
-      appHeaderTitle: process.env.APP_HEADER_TITLE || 'Unifam',
+      appVersion: process.env.APP_VERSION || 'v1.0.0',
+      appHeaderTitle: process.env.APP_HEADER_TITLE || 'UNIFAM',
       sentryDsn: process.env.SENTRY_DSN || '',
       sentryEnv: process.env.SENTRY_ENV || 'local',
       sentryDisabled: process.env.SENTRY_DISABLED || '0',
@@ -59,6 +59,13 @@ export default defineNuxtConfig({
       apiFinanceLocalUrl: process.env.API_FINANCE_LOCAL_URL || '',
       apiWorkflowLocalUrl: process.env.API_WORKFLOW_LOCAL_URL || '',
       couchDBUrl: process.env.COUCHDB_URL || '',
+
+      // Keycloak
+      keycloakUrl: process.env.KEYCLOAK_URL || '',
+      keycloakRealm: process.env.KEYCLOAK_REALM || '',
+      keycloakClientId: process.env.KEYCLOAK_CLIENT_ID || '',
+      keycloakRedirectUri: process.env.KEYCLOAK_REDIRECT_URI || 'http://localhost:3000/callback',
+      cookieExpiredInMinutes: process.env.COOKIE_EXPIRED_IN_MINUTES || '60',
     }
   }
 })
