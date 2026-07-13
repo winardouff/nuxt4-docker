@@ -16,7 +16,7 @@
 <script setup>
 definePageMeta({
   layout: 'main-without-back-button-layout',
-  middleware: ['authenticateds']
+  middleware: ['authenticated']
 })
 
 const networkStatus = ref('')
