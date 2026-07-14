@@ -1,3 +1,8 @@
+import { fileURLToPath } from 'url'
+import { dirname, resolve } from 'path'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -16,9 +21,9 @@ export default defineNuxtConfig({
     '@ionic/core/css/structure.css',
     '@ionic/core/css/typography.css',
     '@ionic/core/css/ionic.bundle.css',
-    '~/assets/css/layout.css',
-    '~/assets/scss/style.scss',
-    '~/assets/css/variables.css',
+    resolve(__dirname, 'app/assets/css/layout.css'),
+    resolve(__dirname, 'app/assets/scss/style.scss'),
+    resolve(__dirname, 'app/assets/css/variables.css'),
   ],
 
   modules: [
