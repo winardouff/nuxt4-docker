@@ -6,6 +6,6 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: false,
+  layout: 'main-without-back-button-layout'
 })
 </script>

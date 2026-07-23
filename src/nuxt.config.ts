@@ -11,16 +11,15 @@ export default defineNuxtConfig({
 
   vue: {
     compilerOptions: {
-      isCustomElement: (tag) => tag.startsWith('ion-'),
+      isCustomElement: (tag) => [
+        'ion-tabs',
+        'ion-tab-bar',
+        'ion-tab-button',
+      ].includes(tag),
     },
   },
 
   css: [
-    '@ionic/core/css/core.css',
-    '@ionic/core/css/normalize.css',
-    '@ionic/core/css/structure.css',
-    '@ionic/core/css/typography.css',
-    '@ionic/core/css/ionic.bundle.css',
     resolve(__dirname, 'app/assets/css/layout.css'),
     resolve(__dirname, 'app/assets/scss/style.scss'),
     resolve(__dirname, 'app/assets/css/variables.css'),
@@ -28,6 +27,7 @@ export default defineNuxtConfig({
 
   modules: [
     '@pinia/nuxt',
+    '@nuxtjs/ionic',
     ['@nuxtjs/i18n', {
       locales: [
         { code: 'en', file: 'en-US.ts' },
@@ -40,6 +40,12 @@ export default defineNuxtConfig({
       strategy: 'no_prefix',
     }],
   ],
+
+  ionic: {
+    integrations: {
+      router: false,
+    },
+  },
 
   runtimeConfig: {
     public: {
