@@ -4,12 +4,11 @@ services:
     image: unidev-fe-core
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/Dockerfile
     ports:
       - 10002:3000
     volumes:
-      - ./src:/src
-      - ./package.json:/src/package.json:ro
+      - .:/src
       - /src/node_modules
     environment:
       - HOST=0.0.0.0

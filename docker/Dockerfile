@@ -4,8 +4,7 @@ ENV APP_ROOT /src
 
 RUN mkdir ${APP_ROOT}
 WORKDIR ${APP_ROOT}
-ADD ./src ${APP_ROOT}
-COPY ./package.json ${APP_ROOT}/package.json
+ADD ../ ${APP_ROOT}
 
 EXPOSE 3000
 
